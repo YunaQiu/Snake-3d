@@ -17,11 +17,12 @@
 	-moz-transform-style: preserve-3d;
 	-ms-transform-style: preserve-3d;
 	transform-style: preserve-3d;
-/*	-webkit-transform: rotateX(-20deg) rotateY(20deg);
-	-ms-transform: rotateX(-20deg) rotateY(20deg);
-	-o-transform: rotateX(-20deg) rotateY(20deg);
-	transform: rotateX(-20deg) rotateY(20deg);
-*/	-webkit-transform: rotateX(-15deg) rotateY(15deg);
+/*	-webkit-transform: rotateX(-15deg) rotateY(15deg) rotateX(-90deg);
+	-ms-transform: rotateX(-15deg) rotateY(15deg) rotateX(-90deg);
+	-o-transform: rotateX(-15deg) rotateY(15deg) rotateX(-90deg);
+	transform: rotateX(-15deg) rotateY(15deg) rotateX(-90deg);
+*/
+	-webkit-transform: rotateX(-15deg) rotateY(15deg);
 	-ms-transform: rotateX(-15deg) rotateY(15deg);
 	-o-transform: rotateX(-15deg) rotateY(15deg);
 	transform: rotateX(-15deg) rotateY(15deg);
@@ -80,7 +81,10 @@
 	-o-transform: rotateY(180deg) translateZ(200px);
 	transform: rotateY(180deg) translateZ(200px);
 }
-
+canvas{
+/*	background-color: #000;
+	border: 1px solid #F00;
+*/}
 
 /*cube animate*/
 .turnLeft{

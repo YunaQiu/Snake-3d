@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="style/main.css">
 	<script src="script/jquery.min.js"></script>
 	<script src="script/animate.js"></script>
+	<script src="script/main.js"></script>
 	<style>
 		div{
 			font-size: 200px;
@@ -17,14 +18,14 @@
 <body class="grey">
 	<div class="cube-container">
 		<div id="cube" class="cube">
- 			<div class="cube-face cube-u pale-yellow">上</div>
-			<div class="cube-face cube-l pale-yellow">左</div>
-			<div class="cube-face cube-f pale-yellow">前</div>
- 			<div class="cube-face cube-d pale-yellow">下</div>
-			<div class="cube-face cube-r pale-yellow">右</div>
-			<div class="cube-face cube-b pale-yellow">后</div>
+ 			<div class="cube-face cube-u pale-yellow"><canvas id="up"></canvas></div>
+			<div class="cube-face cube-l pale-yellow"><canvas id="left"></canvas></div>
+			<div class="cube-face cube-f pale-yellow"><canvas id="front"></canvas></div>
+ 			<div class="cube-face cube-d pale-yellow"><canvas id="down"></canvas></div>
+			<div class="cube-face cube-r pale-yellow"><canvas id="right"></canvas></div>
+			<div class="cube-face cube-b pale-yellow"><canvas id="back"></canvas></div>
 		</div>
 	</div>
-	fwerw
+	<span id="message"></span>
 </body>
 </html>
