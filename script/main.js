@@ -263,6 +263,13 @@ function CreateSnake(){
 		}
 	}
 
+	/*当蛇吃到青蛙时，身体加长并出现新青蛙*/
+	this.eatFrog = function(){
+		this.bodyLength += 1;
+		this.bodyLoc[this.bodyLength-1] = new CreatePoint(this.bodyLoc[this.bodyLength-2].face, this.bodyLoc[this.bodyLength-2].x, this.bodyLoc[this.bodyLength-2].y, 0);	//在末端新增一个点并使其与原末端重合
+		createFrog();
+	}
+
 	/*判断蛇是否吃到自己*/
 	this.eatItself = function(){
 		for (var i = 1; i < this.bodyLength; i++) {
@@ -278,8 +285,8 @@ function CreateSnake(){
 function createFrog(){
 	while(1){
 		frogLoc.face = Math.floor(Math.random() * 6);
-		frogLoc.x = Math.floor(Math.random() * (maxGrid + 1));
-		frogLoc.y = Math.floor(Math.random() * (maxGrid + 1));
+		frogLoc.x = Math.floor(Math.random() * (maxGrid / gridSize + 1)) * gridSize;
+		frogLoc.y = Math.floor(Math.random() * (maxGrid / gridSize + 1)) * gridSize;
 		for (var i = 0; i < snake.bodyLength; i++) {
 			if (snake.bodyLoc[i].equal(frogLoc)){
 				continue;	//若跟蛇身重合，则重新选取坐标
@@ -313,6 +320,7 @@ function printCanvas(){
 /*游戏变量初始化*/
 function iniGame(){
 	gameTime = 0;
+	canvasFaceDir = 0;
 	snake = null;
 	snake = new CreateSnake();
 	frogLoc = null;
@@ -321,16 +329,19 @@ function iniGame(){
 
 /*游戏进行时*/
 function timer(){
-	if (gameStatus != 1) {
+	if (gameStatus != 1) {	//判断游戏是否进行中
 		return;
 	}
-	snake.run();
-	if (snake.eatItself()) {
+	snake.run();	//蛇移动一步
+	if (snake.bodyLoc[0].equal(frogLoc)) {	//判断是否吃到青蛙
+		snake.eatFrog();
+	}
+	printCanvas();	//绘制蛇与青蛙
+	if (snake.eatItself()) {	//若蛇吃到自己，则游戏结束
 		gameStatus = 0;
 		alert("Game Over");
+		return;
 	}
-
-	printCanvas();
 	setTimeout("timer()", 100);
 	gameTime += 0.3;
 }
