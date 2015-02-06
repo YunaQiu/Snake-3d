@@ -1,12 +1,15 @@
-var maxGrid = 390;		//点的最大坐标值
-var gridSize = 10;		//点的长宽
-var gameStatus = 1;		//游戏状态，0-游戏结束；1-游戏进行
-var gameTime = 0;		//游戏进行时长
-var canvasFaceDir = 0;	//画布当前面的顺时针旋转度，0/1/2/3--0/90/180/270度
-var frogLoc = null;		//青蛙初始化，别问我为啥设定是蛇吃青蛙
-var snake = null;		//蛇初始化
-var face = new Array();	//立方体面
+var maxGrid = 390;			//点的最大坐标值
+var gridSize = 10;			//点的长宽
+var gameStatus = 1;			//游戏状态，0-游戏结束；1-游戏进行
+var gameTime = 0;			//游戏进行时长
+var canvasFrontFace = 0;	//画布当前面编号
+var canvasFrontFaceDir = 0;	//画布当前面的顺时针旋转度，0/1/2/3--0/90/180/270度
+var frogLoc = null;			//青蛙位置初始化，别问我为啥设定是蛇吃青蛙
+var snake = null;			//蛇初始化
+var face = new Array();		//立方体面
 var canvasContext = new Array();	//画布
+var rotateStatus = 0;		//立方体旋转状态，0-静止；1-正在旋转
+var ableChangeDirect = true;	//能否改变运动方向（防止运动周期内多次改变方向）
 $(function(){
 	/*面关系初始化，0/1/2/3/4/5--前/上/右/下/左/背面*/
 	face[0] = new IniFace(0,1,0,3,0,4,0,2,0,5,0);
@@ -28,7 +31,7 @@ $(function(){
 		canvas[i].width = 400;
 		canvas[i].height = 400;
 		canvasContext[i] = canvas[i].getContext("2d");
-	};
+	}
 
 	iniGame();
 	timer();
@@ -37,8 +40,8 @@ $(function(){
 
 /**
  * 初始化该面相对于其他面的位置方向属性和查询方法
- * 参考基准：正视图时，左棱与左面的右棱重合，右棱与右面的左棱重合，
- * 		下棱与下面的上棱重合，上棱与上面的下棱重合，背面的上棱朝上
+ * 参考基准：正视图时，正面左棱与左面的右棱重合，正面右棱与右面的左棱重合，
+ * 		正面下棱与下面的上棱重合，正面上棱与上面的下棱重合，背面的上棱朝上
  * @param {num}	code	面的编号
  * @param {num}	up/down/left/right/back	正视图角度时其上/下/左/右/背面的编号
  * @param {num}	**Dir	相对基准方向顺时针旋转了几个90度，取值为0~3
@@ -57,9 +60,9 @@ function IniFace(code, up, upDir, down, downDir, left, leftDir, right, rightDir,
 	this.backDir = backDir;		//背面的旋转度
 
 	/**
-	 * [返回目标面相对正面(前面)的位置
+	 * 返回目标面相对this面的位置
 	 * @param  {num} faceCode     目标面编号
-	 * @param  {num} frontFaceDir 正面(前面)附加的顺时针旋转度，取值0~3
+	 * @param  {num} frontFaceDir this面附加的顺时针旋转度，取值0~3
 	 * @return {num}              相对位置编号，0-同面；1-上面；2-右面；
 	 *                            3-下面；4-左面；5-背面
 	 */
@@ -82,28 +85,28 @@ function IniFace(code, up, upDir, down, downDir, left, leftDir, right, rightDir,
 	/**
 	 * 返回目标面相对参考基准的旋转度
 	 * Question2：因为旋转的问题重新定义过上一个和这一个方法，改完后感觉定义有点糟糕
-	 * @param  {num} faceLoc      目标面位置，取值：0-正面（当前面）；1-上面；2-右面；
-	 *                            3-下面；4-左面；5-背面
-	 * @param  {num} frontFaceDir 正面(前面)附加的顺时针旋转度，取值0~3
+	 * @param  {num} faceLoc      目标面位置，取值：0-正面(与this面同面)；1-上面；
+	 *                            2-右面；3-下面；4-左面；5-背面
+	 * @param  {num} thisFaceDir this面(正面)附加的顺时针旋转度，取值0~3
 	 * @return {num}              目标面相对参考基准的顺时针旋转度，取值0~3
 	 */
-	this.faceDir = function(faceLoc, frontFaceDir){
+	this.faceDir = function(faceLoc, thisFaceDir){
 		switch (faceLoc){
 			case 0:
-				return frontFaceDir;		//正面的旋转度就等于附加旋转度
+				return thisFaceDir;		//正面的旋转度就等于附加旋转度
 			case 5:
-				return ((4 - frontFaceDir) % 4);	//正面顺时针旋转等同于背面的逆时针旋转
+				return ((this.backDir - thisFaceDir + 4) % 4);	//正面顺时针旋转等同于背面的逆时针旋转
 		}
-		var realLoc = (faceLoc - 1 - frontFaceDir + 4) % 4;	//正面旋转前目标面的相对位置，取值0~3
+		var realLoc = (faceLoc - 1 - thisFaceDir + 4) % 4;	//正面旋转前目标面的相对位置，取值0~3
 		switch (realLoc){
 			case 0: 	//旋转前为上面
-				return ((this.upDir + frontFaceDir) % 4);
+				return ((this.upDir + thisFaceDir) % 4);
 			case 1: 	//旋转前为右面
-				return ((this.rightDir + frontFaceDir) % 4);
+				return ((this.rightDir + thisFaceDir) % 4);
 			case 2: 	//旋转前为下面
-				return ((this.downDir + frontFaceDir) % 4);
+				return ((this.downDir + thisFaceDir) % 4);
 			case 3: 	//旋转前为左面
-				return ((this.leftDir + frontFaceDir) % 4);
+				return ((this.leftDir + thisFaceDir) % 4);
 			default:
 				return 0;
 		}
@@ -196,6 +199,7 @@ function CreatePoint(face, x, y, dir){
 /*创建蛇的基本属性和方法*/
 function CreateSnake(){
 	this.frogCount = 0;				//已吃青蛙数
+	this.runSpeed = 100;			//蛇的运动速度
 	this.bodyLength = 7;			//初始长度为4
 	this.runDirect = 1;				//蛇的实际运动方向,0-上；1-右；2-下；3-左
 	this.bodyLoc = new Array();		//初始蛇身位置
@@ -223,18 +227,15 @@ function CreateSnake(){
 				if (preY != 0) {
 					this.bodyLoc[0].y -= gridSize;
 				} else{
-					canvasFaceDir = (face[preFace].upDir + canvasFaceDir) % 4;	//新的当前面方向
-					/*Question1:原先的对象需不需要销毁？怎么销毁？会占用空间不？*/
 					this.bodyLoc[0] = null;
 					this.bodyLoc[0] = new CreatePoint(face[preFace].upFace, preX, maxGrid, 4-face[preFace].upDir);		//面的顺时针旋转等同于点坐标的逆时针旋转
-					this.runDirect = (this.runDirect - face[preFace].upDir + 4) % 4;	//旋转后，原运动方向与在新面上的运动方向不同
+					this.runDirect = (this.runDirect - face[preFace].upDir + 4) % 4;	//面旋转后，原运动方向与在新面上的运动方向不同
 				}
 				break;
 			case 1:
 				if (preX != maxGrid) {
 					this.bodyLoc[0].x += gridSize;
 				} else{
-					canvasFaceDir = (face[preFace].rightDir + canvasFaceDir) % 4;	//新的当前面方向
 					this.bodyLoc[0] = null;
 					this.bodyLoc[0] = new CreatePoint(face[preFace].rightFace, 0, preY, 4-face[preFace].rightDir);
 					this.runDirect = (this.runDirect - face[preFace].rightDir + 4) % 4;
@@ -244,7 +245,6 @@ function CreateSnake(){
 				if (preY != maxGrid) {
 					this.bodyLoc[0].y += gridSize;
 				} else{
-					canvasFaceDir = (face[preFace].downDir + canvasFaceDir) % 4;	//新的当前面方向
 					this.bodyLoc[0] = null;
 					this.bodyLoc[0] = new CreatePoint(face[preFace].downFace, preX, 0, 4-face[preFace].downDir);
 					this.runDirect = (this.runDirect - face[preFace].downDir + 4) % 4;
@@ -254,7 +254,6 @@ function CreateSnake(){
 				if (preX != 0) {
 					this.bodyLoc[0].x -= gridSize;
 				} else{
-					canvasFaceDir = (face[preFace].leftDir + canvasFaceDir) % 4;	//新的当前面方向
 					this.bodyLoc[0] = null;
 					this.bodyLoc[0] = new CreatePoint(face[preFace].leftFace, maxGrid, preY, 4-face[preFace].leftDir);
 					this.runDirect = (this.runDirect - face[preFace].leftDir + 4) % 4;
@@ -266,7 +265,7 @@ function CreateSnake(){
 	/*当蛇吃到青蛙时，身体加长并出现新青蛙*/
 	this.eatFrog = function(){
 		this.bodyLength += 1;
-		this.bodyLoc[this.bodyLength-1] = new CreatePoint(this.bodyLoc[this.bodyLength-2].face, this.bodyLoc[this.bodyLength-2].x, this.bodyLoc[this.bodyLength-2].y, 0);	//在末端新增一个点并使其与原末端重合
+		this.bodyLoc[this.bodyLength - 1] = new CreatePoint(this.bodyLoc[this.bodyLength - 2].face, this.bodyLoc[this.bodyLength - 2].x, this.bodyLoc[this.bodyLength - 2].y, 0);	//在末端新增一个点并使其与原末端重合
 		createFrog();
 	}
 
@@ -298,29 +297,28 @@ function createFrog(){
 
 /*在画布上绘制青蛙和蛇*/
 function printCanvas(){
-	var frontFace = snake.bodyLoc[0].face;		//当前面
 	/*清除画布*/
 	for (var i = 0; i < 6; i++) {
 		canvasContext[i].clearRect(0, 0, 400, 400);
 	};
 	/*绘制青蛙*/
-	var faceLoc = face[frontFace].faceLoc(frogLoc.face, canvasFaceDir);	//判断目标点所在面
-	var faceDir = face[frontFace].faceDir(faceLoc, canvasFaceDir);		//判断目标点所在面方向
+	var faceLoc = face[canvasFrontFace].faceLoc(frogLoc.face, canvasFrontFaceDir);	//判断目标点所在面
+	var faceDir = face[canvasFrontFace].faceDir(faceLoc, canvasFrontFaceDir);		//判断目标点所在面方向
 	canvasContext[faceLoc].fillStyle = "green";
 	canvasContext[faceLoc].fillRect(frogLoc.rotateX(faceDir), frogLoc.rotateY(faceDir), gridSize, gridSize);		//点坐标根据面方向旋转相应角度
 	/*绘制蛇身*/
 	for (var i = 0; i < snake.bodyLength; i++) {
-	 	faceLoc = face[frontFace].faceLoc(snake.bodyLoc[i].face, canvasFaceDir);
-		faceDir = face[frontFace].faceDir(faceLoc, canvasFaceDir);
+	 	faceLoc = face[canvasFrontFace].faceLoc(snake.bodyLoc[i].face, canvasFrontFaceDir);
+		faceDir = face[canvasFrontFace].faceDir(faceLoc, canvasFrontFaceDir);
 		canvasContext[faceLoc].fillStyle = "red";
-		 canvasContext[faceLoc].fillRect(snake.bodyLoc[i].rotateX(faceDir), snake.bodyLoc[i].rotateY(faceDir), gridSize, gridSize);
+		canvasContext[faceLoc].fillRect(snake.bodyLoc[i].rotateX(faceDir), snake.bodyLoc[i].rotateY(faceDir), gridSize, gridSize);
 	}
 }
 
 /*游戏变量初始化*/
 function iniGame(){
 	gameTime = 0;
-	canvasFaceDir = 0;
+	canvasFrontFaceDir = 0;
 	snake = null;
 	snake = new CreateSnake();
 	frogLoc = null;
@@ -333,8 +331,19 @@ function timer(){
 		return;
 	}
 	snake.run();	//蛇移动一步
+	ableChangeDirect = true;	//蛇移动完后解锁移动方向
 	if (snake.bodyLoc[0].equal(frogLoc)) {	//判断是否吃到青蛙
 		snake.eatFrog();
+	}
+	if (snake.bodyLoc[0].face != snake.bodyLoc[1].face) {	//换面时播放旋转动画
+		if (rotateStatus == 1){		//若上个动画没放完则立即终止，开始播放下一个动画
+			clearAnimate();
+		}
+		var rotateDir = face[snake.bodyLoc[1].face].faceLoc(snake.bodyLoc[0].face, canvasFrontFaceDir) - 1;		//判断旋转方向
+		rotateCube(rotateDir);
+	}
+	if (!rotateStatus){		//若立方体旋转完毕，则移除动画类
+		$('#cube').removeClass('turnUp turnRight turnDown turnLeft');
 	}
 	printCanvas();	//绘制蛇与青蛙
 	if (snake.eatItself()) {	//若蛇吃到自己，则游戏结束
@@ -342,14 +351,14 @@ function timer(){
 		alert("Game Over");
 		return;
 	}
-	setTimeout("timer()", 100);
-	gameTime += 0.3;
+	setTimeout("timer()", snake.runSpeed);
+	gameTime += snake.runSpeed * 0.001;
 }
 
 /*键盘操作处理*/
 $("html").keydown(function(event){
-	if (gameStatus != 1) {
-		return;		//只有游戏进行时才可改变方向
+	if (!(gameStatus == 1 && ableChangeDirect)) {
+		return;		//只有游戏进行时才可改变方向;不可在短时间内连续改变方向
 	}
 	switch(event.keyCode){
 		case 38: 	//key up
@@ -370,15 +379,20 @@ $("html").keydown(function(event){
 			break;
 		case 74: 	//key J，测试用
 			message = $("#message").html();
-			$("#message").html(message + "<br/>" + snake.bodyLoc[0].face + "<br/>" + snake.bodyLoc[0].x + "<br/>" + snake.bodyLoc[0].y);
+			$("#message").html(message + "<br/>" + snake.runDirect + "<br/>" + canvasFrontFace + "<br/>" + canvasFrontFaceDir);
+			return;
+		case 80: 	//key P，暂停
+			alert("pause");
 			return;
 		default:
 			return;
 	}
-	var realDir = (keyDir + 4 - canvasFaceDir) % 4;	//实际的运动方向相对当前面的方向逆时针旋转
+	var headFaceLoc = face[canvasFrontFace].faceLoc(snake.bodyLoc[0].face, canvasFrontFaceDir);
+	var realDir = (keyDir + 4 - face[canvasFrontFace].faceDir(headFaceLoc, canvasFrontFaceDir)) % 4;	//实际的运动方向相对当前面的方向逆时针旋转
 	if (Math.abs(realDir - snake.runDirect) == 2) {
 		return;		//不允许向后运动
 	} else{
 		snake.runDirect = realDir;
+		ableChangeDirect = false;
 	}
 });
