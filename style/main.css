@@ -17,10 +17,10 @@
 	-moz-transform-style: preserve-3d;
 	-ms-transform-style: preserve-3d;
 	transform-style: preserve-3d;
-/*	-webkit-transform: rotateX(-15deg) rotateY(15deg) rotateX(-90deg);
-	-ms-transform: rotateX(-15deg) rotateY(15deg) rotateX(-90deg);
-	-o-transform: rotateX(-15deg) rotateY(15deg) rotateX(-90deg);
-	transform: rotateX(-15deg) rotateY(15deg) rotateX(-90deg);
+/*	-webkit-transform: rotateX(-15deg) rotateY(15deg) rotateY(-180deg);
+	-ms-transform: rotateX(-15deg) rotateY(15deg) rotateY(-180deg);
+	-o-transform: rotateX(-15deg) rotateY(15deg) rotateY(-180deg);
+	transform: rotateX(-15deg) rotateY(15deg) rotateY(-180deg);
 */
 	-webkit-transform: rotateX(-15deg) rotateY(15deg);
 	-ms-transform: rotateX(-15deg) rotateY(15deg);
