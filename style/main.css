@@ -76,10 +76,6 @@
 	-o-transform: rotateY(180deg) translateZ(200px);
 	transform: rotateY(180deg) translateZ(200px);
 }
-canvas{
-/*	background-color: #000;
-	border: 1px solid #F00;
-*/}
 
 /*cube animate*/
 .turnLeft{
