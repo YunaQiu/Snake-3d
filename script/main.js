@@ -306,6 +306,9 @@ function printCanvas(){
 	var faceDir = face[canvasFrontFace].faceDir(faceLoc, canvasFrontFaceDir);		//判断目标点所在面方向
 	canvasContext[faceLoc].fillStyle = "green";
 	canvasContext[faceLoc].fillRect(frogLoc.rotateX(faceDir), frogLoc.rotateY(faceDir), gridSize, gridSize);		//点坐标根据面方向旋转相应角度
+	if (snake.bodyLoc[snake.bodyLength-1].equal(snake.bodyLoc[snake.bodyLength-2])) {	//如果蛇最后两节重合，说明产生了新青蛙
+		faceFlashing(faceLoc);	//闪烁提示新青蛙所在面
+	};
 	/*绘制蛇身*/
 	for (var i = 0; i < snake.bodyLength; i++) {
 	 	faceLoc = face[canvasFrontFace].faceLoc(snake.bodyLoc[i].face, canvasFrontFaceDir);

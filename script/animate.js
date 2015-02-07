@@ -1,4 +1,4 @@
-var timeClockID;	//记录动画计时器ID
+var timeClockID;	//动画计时器ID
 
 /**
  * 给立方体添加旋转动画
@@ -38,4 +38,33 @@ function clearAnimate(){
 	canvasFrontFaceDir = face[preCanvasFace].faceDir(preRotateDir + 1, preCanvasDir);	//更新画布当前面方向
 	$('#cube').removeClass('turnUp turnRight turnDown turnLeft');	//移除旋转动画类
 	printCanvas();	//重新绘制画布
+}
+
+/**
+ * 闪烁面提示新青蛙所在位置
+ * @param  {num} canvasCode 青蛙所在的画布编号(不是面编号)
+ */
+function faceFlashing(canvasCode){
+	switch (canvasCode){
+		case 0:
+			$canvas = $("#front");
+			break;
+		case 1:
+			$canvas = $("#up");
+			break;
+		case 2:
+			$canvas = $("#right");
+			break;
+		case 3:
+			$canvas = $("#down");
+			break;
+		case 4:
+			$canvas = $("#left");
+			break;
+		case 5:
+			$canvas = $("#back");
+	}
+	$canvas.addClass('faceFlashing');
+	setTimeout("$canvas.removeClass('faceFlashing')", 1000);
+
 }

@@ -338,3 +338,37 @@
 		transform: rotateX(-15deg) rotateY(15deg) rotateX(90deg);
 	 }
 }
+
+.faceFlashing{
+	-webkit-animation: flashing 1s;
+	-o-animation: flashing 1s;
+	animation: flashing 1s;
+}
+@-webkit-keyframes flashing {
+	0% { background-color: #EEE4DA; }
+	25% { background-color: #F3D774; }
+	50% { background-color: #EEE4DA; }
+	75% { background-color: #F3D774; }
+	100% { background-color: #EEE4DA; }
+}
+@-o-keyframes flashing {
+	0% { background-color: #EEE4DA; }
+	25% { background-color: #F3D774; }
+	50% { background-color: #EEE4DA; }
+	75% { background-color: #F3D774; }
+	100% { background-color: #EEE4DA; }
+}
+@-moz-keyframes flashing {
+	0% { background-color: #EEE4DA; }
+	25% { background-color: #F3D774; }
+	50% { background-color: #EEE4DA; }
+	75% { background-color: #F3D774; }
+	100% { background-color: #EEE4DA; }
+}
+@keyframes flashing {
+	0% { background-color: #EEE4DA; }
+	25% { background-color: #F3D774; }
+	50% { background-color: #EEE4DA; }
+	75% { background-color: #F3D774; }
+	100% { background-color: #EEE4DA; }
+}
