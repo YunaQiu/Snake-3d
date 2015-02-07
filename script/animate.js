@@ -1,4 +1,4 @@
-var timeClockID;	//动画计时器ID
+var animateClockID;	//动画计时器ID
 
 /**
  * 给立方体添加旋转动画
@@ -21,7 +21,7 @@ function rotateCube(rotateDir){
 		case 3:
 			$("#cube").addClass("turnLeft");
 	}
-	timeClockID = setTimeout(function(){
+	animateClockID = setTimeout(function(){
 		rotateStatus = 0;	//旋转结束
 		canvasFrontFace = afterCanvasFace;	//更新旋转后的画布当前面参数
 		canvasFrontFaceDir = afterCanvasDir;
@@ -30,7 +30,7 @@ function rotateCube(rotateDir){
 
 /*清除正在进行的旋转动画*/
 function clearAnimate(){
-	clearTimeout(timeClockID);	//终止旋转计时
+	clearTimeout(animateClockID);	//终止旋转计时
 	preCanvasFace = canvasFrontFace;	//旋转前的画布当前面
 	preCanvasDir = canvasFrontFaceDir	//旋转前的画布当前面方向
 	canvasFrontFace = snake.bodyLoc[1].face;	//立即切换到旋转后的画布当前面

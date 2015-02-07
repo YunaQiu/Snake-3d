@@ -1,7 +1,7 @@
 var maxGrid = 390;			//点的最大坐标值
 var gridSize = 10;			//点的长宽
-var gameStatus = 1;			//游戏状态，0-游戏结束；1-游戏进行
-var gameTime = 0;			//游戏进行时长
+var gameStatus = 0;			//游戏状态，0-游戏结束；1-游戏进行; 2-游戏暂停
+var gameTime = 0;		//游戏进行时长
 var canvasFrontFace = 0;	//画布当前面编号
 var canvasFrontFaceDir = 0;	//画布当前面的顺时针旋转度，0/1/2/3--0/90/180/270度
 var frogLoc = null;			//青蛙位置初始化，别问我为啥设定是蛇吃青蛙
@@ -10,6 +10,7 @@ var face = new Array();		//立方体面
 var canvasContext = new Array();	//画布
 var rotateStatus = 0;		//立方体旋转状态，0-静止；1-正在旋转
 var ableChangeDirect = true;	//能否改变运动方向（防止运动周期内多次改变方向）
+var timeClockID;			//游戏周期计时器
 $(function(){
 	/*面关系初始化，0/1/2/3/4/5--前/上/右/下/左/背面*/
 	face[0] = new IniFace(0,1,0,3,0,4,0,2,0,5,0);
@@ -33,8 +34,11 @@ $(function(){
 		canvasContext[i] = canvas[i].getContext("2d");
 	}
 
-	iniGame();
-	timer();
+	$("#newGame").click(function(){
+		iniGame();
+		gameStatus = 1;
+		timer();
+	});
 });
 
 
@@ -264,6 +268,7 @@ function CreateSnake(){
 
 	/*当蛇吃到青蛙时，身体加长并出现新青蛙*/
 	this.eatFrog = function(){
+		this.frogCount += 1;
 		this.bodyLength += 1;
 		this.bodyLoc[this.bodyLength - 1] = new CreatePoint(this.bodyLoc[this.bodyLength - 2].face, this.bodyLoc[this.bodyLength - 2].x, this.bodyLoc[this.bodyLength - 2].y, 0);	//在末端新增一个点并使其与原末端重合
 		createFrog();
@@ -321,11 +326,18 @@ function printCanvas(){
 /*游戏变量初始化*/
 function iniGame(){
 	gameTime = 0;
+	canvasFrontFace = 0;
 	canvasFrontFaceDir = 0;
 	snake = null;
 	snake = new CreateSnake();
 	frogLoc = null;
 	frogLoc = new CreatePoint(0, 300, 120, 0);
+	clearTimeout(timeClockID);
+	clearAnimate();
+	rotateStatus = 0;
+	ableChangeDirect = 1;
+	$("#frogCount").html(0);
+	$("#timeCount").html(0);
 }
 
 /*游戏进行时*/
@@ -337,6 +349,7 @@ function timer(){
 	ableChangeDirect = true;	//蛇移动完后解锁移动方向
 	if (snake.bodyLoc[0].equal(frogLoc)) {	//判断是否吃到青蛙
 		snake.eatFrog();
+		$("#frogCount").html(snake.frogCount);
 	}
 	if (snake.bodyLoc[0].face != snake.bodyLoc[1].face) {	//换面时播放旋转动画
 		if (rotateStatus == 1){		//若上个动画没放完则立即终止，开始播放下一个动画
@@ -349,17 +362,29 @@ function timer(){
 		$('#cube').removeClass('turnUp turnRight turnDown turnLeft');
 	}
 	printCanvas();	//绘制蛇与青蛙
+	$("#timeCount").html(gameTime.toFixed(1) + "s");	//toFix()解决JS浮点数计算bug
 	if (snake.eatItself()) {	//若蛇吃到自己，则游戏结束
 		gameStatus = 0;
 		alert("Game Over");
 		return;
 	}
-	setTimeout("timer()", snake.runSpeed);
+	timeClockID = setTimeout("timer()", snake.runSpeed);
 	gameTime += snake.runSpeed * 0.001;
 }
 
 /*键盘操作处理*/
 $("html").keydown(function(event){
+	if (event.keyCode == 80) {	//游戏进行时，按P键暂停
+		if (gameStatus == 1) {
+			gameStatus = 2;
+			event.preventDefault();	
+		}else if (gameStatus == 2) {
+			gameStatus = 1;
+			timer();
+			event.preventDefault();	
+		}
+		return;
+	}
 	if (!(gameStatus == 1 && ableChangeDirect)) {
 		return;		//只有游戏进行时才可改变方向;不可在短时间内连续改变方向
 	}
@@ -383,9 +408,6 @@ $("html").keydown(function(event){
 		case 74: 	//key J，测试用
 			message = $("#message").html();
 			$("#message").html(message + "<br/>" + snake.runDirect + "<br/>" + canvasFrontFace + "<br/>" + canvasFrontFaceDir);
-			return;
-		case 80: 	//key P，暂停
-			alert("pause");
 			return;
 		default:
 			return;

@@ -1,5 +1,60 @@
 #container{
-/*	width: 800px;
-	height: 800px;
+	position: relative;
+	font-family: 'Calibri';
+	width: 600px;
 	margin: auto auto;
-*/}
+}
+.header{
+	position: relative;
+	font-weight: bold;
+}
+.title{
+	font-size: 80px;
+	margin: 0px;
+	color: #505245;
+}
+.smallContainer{
+	position: relative;
+	width: 100px;
+	height: 70px;
+	float: right;
+	background-color: #bbada0;
+	border-radius: 10px;
+	margin-left: 10px;
+	font-size: 15px;
+}
+.smallContainer_title{
+	position: relative;
+	display: block;
+	margin-top: 5px;
+	color: #E1DCD7;
+	text-align: center; 
+	font-size: 20px;
+}
+.smallContainer_body{
+	position: relative;
+	display: block;
+	color: #FFFFFF;
+	text-align: center; 
+	font-size: 30px;
+}
+.button{
+	background-color: #edc53f;
+	border-radius: 5px;
+	padding: 5px 0px;
+	height: 40px;
+	font-size: 30px;
+	color: #FFFFFF;
+	text-align: center;
+	cursor: pointer;
+}
+#newGame{
+	margin-top: 20px;
+	float: left;
+	width: 180px;
+}
+.message{
+	clear: both;
+	font-size: 20px;
+	color: #776e65;
+}
