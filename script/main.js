@@ -309,7 +309,7 @@ function printCanvas(){
 	/*绘制青蛙*/
 	var faceLoc = face[canvasFrontFace].faceLoc(frogLoc.face, canvasFrontFaceDir);	//判断目标点所在面
 	var faceDir = face[canvasFrontFace].faceDir(faceLoc, canvasFrontFaceDir);		//判断目标点所在面方向
-	canvasContext[faceLoc].fillStyle = "green";
+	canvasContext[faceLoc].fillStyle = "#00FF00";
 	canvasContext[faceLoc].fillRect(frogLoc.rotateX(faceDir), frogLoc.rotateY(faceDir), gridSize, gridSize);		//点坐标根据面方向旋转相应角度
 	if (snake.bodyLoc[snake.bodyLength-1].equal(snake.bodyLoc[snake.bodyLength-2])) {	//如果蛇最后两节重合，说明产生了新青蛙
 		faceFlashing(faceLoc);	//闪烁提示新青蛙所在面
@@ -333,7 +333,7 @@ function iniGame(){
 	frogLoc = null;
 	frogLoc = new CreatePoint(0, 300, 120, 0);
 	clearTimeout(timeClockID);
-	clearAnimate();
+	cutAnimate();
 	rotateStatus = 0;
 	ableChangeDirect = 1;
 	$("#frogCount").html(0);
@@ -353,13 +353,13 @@ function timer(){
 	}
 	if (snake.bodyLoc[0].face != snake.bodyLoc[1].face) {	//换面时播放旋转动画
 		if (rotateStatus == 1){		//若上个动画没放完则立即终止，开始播放下一个动画
-			clearAnimate();
+			cutAnimate();
 		}
 		var rotateDir = face[snake.bodyLoc[1].face].faceLoc(snake.bodyLoc[0].face, canvasFrontFaceDir) - 1;		//判断旋转方向
 		rotateCube(rotateDir);
 	}
 	if (!rotateStatus){		//若立方体旋转完毕，则移除动画类
-		$('#cube').removeClass('turnUp turnRight turnDown turnLeft');
+		clearAnimate();
 	}
 	printCanvas();	//绘制蛇与青蛙
 	$("#timeCount").html(gameTime.toFixed(1) + "s");	//toFix()解决JS浮点数计算bug

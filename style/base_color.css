@@ -40,3 +40,21 @@
 .bg_lightRed{
 	background-color: #F48679;
 }
+.bg_front{
+	background-color: #FFFFFF;
+}
+.bg_up{
+	background-color: #D5D5D5;
+}
+.bg_right{
+	background-color: #000000;
+}
+.bg_down{
+	background-color: #1C1C1C;
+}
+.bg_left{
+	background-color: #888888;
+}
+.bg_back{
+	background-color: #646768;
+}
