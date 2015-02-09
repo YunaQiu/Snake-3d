@@ -1,7 +1,6 @@
 var maxGrid = 390;			//点的最大坐标值
 var gridSize = 10;			//点的长宽
 var gameStatus = 0;			//游戏状态，0-游戏结束；1-游戏进行; 2-游戏暂停
-var gameTime = 0;		//游戏进行时长
 var canvasFrontFace = 0;	//画布当前面编号
 var canvasFrontFaceDir = 0;	//画布当前面的顺时针旋转度，0/1/2/3--0/90/180/270度
 var frogLoc = null;			//青蛙位置初始化，别问我为啥设定是蛇吃青蛙
@@ -34,11 +33,30 @@ $(function(){
 		canvasContext[i] = canvas[i].getContext("2d");
 	}
 
+	/*最高纪录载入*/
+	if (bestScore = $.cookie('bestScore')) {
+		$("#bestScore").html(bestScore);
+	} else{
+		$("#bestScore").html(0);
+	}
+
+	/*new game单击事件*/
 	$("#newGame").click(function(){
 		iniGame();
 		gameStatus = 1;
 		timer();
 	});
+
+	$("#pause").click(function(){
+		if (gameStatus == 1) {
+			gameStatus = 2;
+			$(this).html("Restart");
+		}else if (gameStatus == 2) {
+			gameStatus = 1;
+			timer();
+			$(this).html("Pause");
+		}
+	})
 });
 
 
@@ -269,8 +287,9 @@ function CreateSnake(){
 	/*当蛇吃到青蛙时，身体加长并出现新青蛙*/
 	this.eatFrog = function(){
 		this.frogCount += 1;
-		this.bodyLength += 1;
-		this.bodyLoc[this.bodyLength - 1] = new CreatePoint(this.bodyLoc[this.bodyLength - 2].face, this.bodyLoc[this.bodyLength - 2].x, this.bodyLoc[this.bodyLength - 2].y, 0);	//在末端新增一个点并使其与原末端重合
+		this.bodyLength += 2;
+		this.bodyLoc[this.bodyLength - 2] = new CreatePoint(this.bodyLoc[this.bodyLength - 3].face, this.bodyLoc[this.bodyLength - 3].x, this.bodyLoc[this.bodyLength - 3].y, 0);	//在末端新增两个点并使其与原末端重合
+		this.bodyLoc[this.bodyLength - 1] = new CreatePoint(this.bodyLoc[this.bodyLength - 3].face, this.bodyLoc[this.bodyLength - 3].x, this.bodyLoc[this.bodyLength - 3].y, 0);
 		createFrog();
 	}
 
@@ -311,7 +330,7 @@ function printCanvas(){
 	var faceDir = face[canvasFrontFace].faceDir(faceLoc, canvasFrontFaceDir);		//判断目标点所在面方向
 	canvasContext[faceLoc].fillStyle = "#00FF00";
 	canvasContext[faceLoc].fillRect(frogLoc.rotateX(faceDir), frogLoc.rotateY(faceDir), gridSize, gridSize);		//点坐标根据面方向旋转相应角度
-	if (snake.bodyLoc[snake.bodyLength-1].equal(snake.bodyLoc[snake.bodyLength-2])) {	//如果蛇最后两节重合，说明产生了新青蛙
+	if (snake.bodyLoc[snake.bodyLength-2].equal(snake.bodyLoc[snake.bodyLength-3])) {	//如果蛇倒数二三节重合，说明产生了新青蛙
 		faceFlashing(faceLoc);	//闪烁提示新青蛙所在面
 	};
 	/*绘制蛇身*/
@@ -325,7 +344,6 @@ function printCanvas(){
 
 /*游戏变量初始化*/
 function iniGame(){
-	gameTime = 0;
 	canvasFrontFace = 0;
 	canvasFrontFaceDir = 0;
 	snake = null;
@@ -337,7 +355,18 @@ function iniGame(){
 	rotateStatus = 0;
 	ableChangeDirect = 1;
 	$("#frogCount").html(0);
-	$("#timeCount").html(0);
+}
+
+/**
+ * 更新最高成绩纪录
+ * @param  {num} score 新纪录分数
+ */
+function updateBest(score){
+	var record = $.cookie('bestScore');
+	if(!record || score > record){
+		$.cookie('bestScore', score, {expires:30});
+		$('#bestScore').html(score);
+	}
 }
 
 /*游戏进行时*/
@@ -349,27 +378,26 @@ function timer(){
 	ableChangeDirect = true;	//蛇移动完后解锁移动方向
 	if (snake.bodyLoc[0].equal(frogLoc)) {	//判断是否吃到青蛙
 		snake.eatFrog();
-		$("#frogCount").html(snake.frogCount);
+		$("#frogCount").html(snake.frogCount);	//更新已吃青蛙数
+		updateBest(snake.frogCount);	//更新最高分纪录
 	}
 	if (snake.bodyLoc[0].face != snake.bodyLoc[1].face) {	//换面时播放旋转动画
+		var rotateDir = face[snake.bodyLoc[1].face].faceLoc(snake.bodyLoc[0].face, canvasFrontFaceDir) - 1;		//判断旋转方向
 		if (rotateStatus == 1){		//若上个动画没放完则立即终止，开始播放下一个动画
 			cutAnimate();
 		}
-		var rotateDir = face[snake.bodyLoc[1].face].faceLoc(snake.bodyLoc[0].face, canvasFrontFaceDir) - 1;		//判断旋转方向
 		rotateCube(rotateDir);
 	}
 	if (!rotateStatus){		//若立方体旋转完毕，则移除动画类
 		clearAnimate();
 	}
 	printCanvas();	//绘制蛇与青蛙
-	$("#timeCount").html(gameTime.toFixed(1) + "s");	//toFix()解决JS浮点数计算bug
 	if (snake.eatItself()) {	//若蛇吃到自己，则游戏结束
 		gameStatus = 0;
 		alert("Game Over");
 		return;
 	}
 	timeClockID = setTimeout("timer()", snake.runSpeed);
-	gameTime += snake.runSpeed * 0.001;
 }
 
 /*键盘操作处理*/
@@ -407,7 +435,7 @@ $("html").keydown(function(event){
 			break;
 		case 74: 	//key J，测试用
 			message = $("#message").html();
-			$("#message").html(message + "<br/>" + snake.runDirect + "<br/>" + canvasFrontFace + "<br/>" + canvasFrontFaceDir);
+			$("#message").html(message + "<hr/>" + snake.runDirect + "<br/>" + canvasFrontFace + "<br/>" + canvasFrontFaceDir);
 			return;
 		default:
 			return;

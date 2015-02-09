@@ -1,12 +1,14 @@
 var animateClockID;	//动画计时器ID
+var afterCanvasFace = 0;	//暂存旋转后的画布参数
+var afterCanvasDir = 0;
 
 /**
  * 给立方体添加旋转动画
  * @param  {num} rotateDir 立方体旋转方向，0-上；1-右；2-下；3-左
  */
 function rotateCube(rotateDir){
-	var afterCanvasFace = snake.bodyLoc[0].face;	//判断旋转完成后的画布当前面
-	var afterCanvasDir = face[canvasFrontFace].faceDir(rotateDir + 1, canvasFrontFaceDir);	//判断旋转完成后的画布当前面方向
+	afterCanvasFace = snake.bodyLoc[0].face;	//判断旋转完成后的画布当前面
+	afterCanvasDir = face[canvasFrontFace].faceDir(rotateDir + 1, canvasFrontFaceDir);	//判断旋转完成后的画布当前面方向
 	rotateStatus = 1;	//开始旋转
 	switch (rotateDir){
 		case 0:
@@ -55,14 +57,11 @@ function rotateCube(rotateDir){
 /*中断正在进行的旋转动画*/
 function cutAnimate(){
 	clearTimeout(animateClockID);	//终止旋转计时
-	preCanvasFace = canvasFrontFace;	//旋转前的画布当前面
-	preCanvasDir = canvasFrontFaceDir	//旋转前的画布当前面方向
-	canvasFrontFace = snake.bodyLoc[1].face;	//立即切换到旋转后的画布当前面
-	preRotateDir = face[preCanvasFace].faceLoc(canvasFrontFace, preCanvasDir) - 1;	//原旋转动画的旋转方向
-	canvasFrontFaceDir = face[preCanvasFace].faceDir(preRotateDir + 1, preCanvasDir);	//更新画布当前面方向
+	rotateStatus = 0;
+	canvasFrontFace = afterCanvasFace;
+	canvasFrontFaceDir = afterCanvasDir;
 	clearAnimate();	//移除旋转动画类
 	printCanvas();	//重新绘制画布
-	rotateStatus = 0;
 }
 
 /*移除旋转动画类*/

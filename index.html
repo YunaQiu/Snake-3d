@@ -3,21 +3,23 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Snake-3D</title>
-	<link rel="stylesheet" href="style/base_color.css">
 	<link rel="stylesheet" href="style/page.css">
 	<link rel="stylesheet" href="style/main.css">
+	<link rel="stylesheet" href="style/animate.css">
 	<script src="script/jquery.min.js"></script>
+	<script src="script/jquery.cookie.js"></script>
 	<script src="script/animate.js"></script>
 	<script src="script/main.js"></script>
 </head>
-<body class="bg_paleGrey">
+<body>
 	<div id="container">
 		<div class="header">
 			<h1 class="title">Snake-3D</h1>
 			<div class="button" id="newGame">New Game</div>
+			<div class="button" id="pause">Pause</div>
 			<div class="smallContainer">
-				<span class="smallContainer_title">Time</span>
-				<span class="smallContainer_body" id="timeCount">0</span>
+				<span class="smallContainer_title">Best</span>
+				<span class="smallContainer_body" id="bestScore">0</span>
 			</div>
 			<div class="smallContainer">
 				<span class="smallContainer_title">Count</span>

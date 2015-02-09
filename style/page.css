@@ -1,3 +1,6 @@
+body{
+	background-color: #E0DCD8;
+}
 #container{
 	position: relative;
 	font-family: 'Calibri';
@@ -39,19 +42,27 @@
 	font-size: 30px;
 }
 .button{
-	background-color: #edc53f;
 	border-radius: 5px;
 	padding: 5px 0px;
 	height: 40px;
 	font-size: 30px;
-	color: #FFFFFF;
 	text-align: center;
 	cursor: pointer;
 }
 #newGame{
+	background-color: #edc53f;
+	color: #FFFFFF;
 	margin-top: 20px;
 	float: left;
 	width: 180px;
+}
+#pause{
+	background-color: #F03C3C;
+	color: #FFFFFF;
+	margin-top: 20px;
+	margin-left: 5px;
+	float: left;
+	width: 120px;
 }
 .message{
 	clear: both;
