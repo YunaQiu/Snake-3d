@@ -40,23 +40,6 @@ $(function(){
 		$("#bestScore").html(0);
 	}
 
-	/*new game单击事件*/
-	$("#newGame").click(function(){
-		iniGame();
-		gameStatus = 1;
-		timer();
-	});
-
-	$("#pause").click(function(){
-		if (gameStatus == 1) {
-			gameStatus = 2;
-			$(this).html("Restart");
-		}else if (gameStatus == 2) {
-			gameStatus = 1;
-			timer();
-			$(this).html("Pause");
-		}
-	})
 });
 
 
@@ -400,8 +383,7 @@ function timer(){
 	timeClockID = setTimeout("timer()", snake.runSpeed);
 }
 
-/*键盘操作处理*/
-$("html").keydown(function(event){
+/*$("html").keydown(function(event){
 	if (event.keyCode == 80) {	//游戏进行时，按P键暂停
 		if (gameStatus == 1) {
 			gameStatus = 2;
@@ -448,4 +430,4 @@ $("html").keydown(function(event){
 		snake.runDirect = realDir;
 		ableChangeDirect = false;
 	}
-});
+});*/
