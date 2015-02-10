@@ -9,6 +9,7 @@ var afterCanvasDir = 0;
 function rotateCube(rotateDir){
 	afterCanvasFace = snake.bodyLoc[0].face;	//判断旋转完成后的画布当前面
 	afterCanvasDir = face[canvasFrontFace].faceDir(rotateDir + 1, canvasFrontFaceDir);	//判断旋转完成后的画布当前面方向
+	clearAnimate();
 	rotateStatus = 1;	//开始旋转
 	switch (rotateDir){
 		case 0:
