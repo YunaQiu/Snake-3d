@@ -318,7 +318,7 @@ function printCanvas(){
 	};
 	/*绘制蛇身*/
 	for (var i = 0; i < snake.bodyLength; i++) {
-	 	faceLoc = face[canvasFrontFace].faceLoc(snake.bodyLoc[i].face, canvasFrontFaceDir);
+		faceLoc = face[canvasFrontFace].faceLoc(snake.bodyLoc[i].face, canvasFrontFaceDir);
 		faceDir = face[canvasFrontFace].faceDir(faceLoc, canvasFrontFaceDir);
 		canvasContext[faceLoc].fillStyle = "red";
 		canvasContext[faceLoc].fillRect(snake.bodyLoc[i].rotateX(faceDir), snake.bodyLoc[i].rotateY(faceDir), gridSize, gridSize);
@@ -367,10 +367,10 @@ function timer(){
 		updateBest(snake.frogCount);	//更新最高分纪录
 	}
 	if (snake.bodyLoc[0].face != snake.bodyLoc[1].face) {	//换面时播放旋转动画
-		var rotateDir = face[snake.bodyLoc[1].face].faceLoc(snake.bodyLoc[0].face, canvasFrontFaceDir) - 1;		//判断旋转方向
 		if (rotateStatus == 1){		//若上个动画没放完则立即终止，开始播放下一个动画
 			cutAnimate();
 		}
+		var rotateDir = face[snake.bodyLoc[1].face].faceLoc(snake.bodyLoc[0].face, canvasFrontFaceDir) - 1;		//判断旋转方向
 		rotateCube(rotateDir);
 	}
 	if (!rotateStatus){		//若立方体旋转完毕，则移除动画类
