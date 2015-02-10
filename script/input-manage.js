@@ -7,14 +7,7 @@ $(function(){
 	});
 
 	$("#pause").click(function(){
-		if (gameStatus == 1) {
-			gameStatus = 2;
-			$(this).html("Restart");
-		}else if (gameStatus == 2) {
-			gameStatus = 1;
-			timer();
-			$(this).html("Pause");
-		}
+		eventManage('p');
 	});
 
 	/*触屏滑动操作*/
@@ -38,28 +31,28 @@ $(function(){
 	$("html").keydown(function(event){
 		switch(event.keyCode){
 			case 38: 	//key up
-				eventManage('u');
 				event.preventDefault();	
+				eventManage('u');
 				break;
 			case 39: 	//key right
-				eventManage('r');
 				event.preventDefault();	
+				eventManage('r');
 				break;
 			case 40: 	//key down
-				eventManage('d');
 				event.preventDefault();	
+				eventManage('d');
 				break;
 			case 37: 	//key left
-				eventManage('l');
 				event.preventDefault();	
+				eventManage('l');
 				break;
 			case 80: 	//key p，暂停/继续
-				eventManage('p');
 				event.preventDefault();	
+				eventManage('p');
 				return;
 			case 74: 	//key J，测试用
-				eventManage('j');
 				event.preventDefault();	
+				eventManage('j');
 				return;
 			default:
 				return;
@@ -72,9 +65,11 @@ function eventManage(input){
 	if (input == 'p') {	//暂停与继续游戏状态切换
 		if (gameStatus == 1) {
 			gameStatus = 2;
+			$("#pause").html("Restart");
 		}else if (gameStatus == 2) {
 			gameStatus = 1;
 			timer();
+			$("#pause").html("Pause");
 		}
 		return;
 	}

@@ -329,12 +329,14 @@ function printCanvas(){
 function iniGame(){
 	canvasFrontFace = 0;
 	canvasFrontFaceDir = 0;
+	afterCanvasFace = 0;
+	afterCanvasDir = 0;
 	snake = null;
 	snake = new CreateSnake();
 	frogLoc = null;
 	frogLoc = new CreatePoint(0, 300, 120, 0);
-	clearTimeout(timeClockID);
 	cutAnimate();
+	clearTimeout(timeClockID);
 	rotateStatus = 0;
 	ableChangeDirect = 1;
 	$("#frogCount").html(0);
@@ -382,52 +384,3 @@ function timer(){
 	}
 	timeClockID = setTimeout("timer()", snake.runSpeed);
 }
-
-/*$("html").keydown(function(event){
-	if (event.keyCode == 80) {	//游戏进行时，按P键暂停
-		if (gameStatus == 1) {
-			gameStatus = 2;
-			event.preventDefault();	
-		}else if (gameStatus == 2) {
-			gameStatus = 1;
-			timer();
-			event.preventDefault();	
-		}
-		return;
-	}
-	if (!(gameStatus == 1 && ableChangeDirect)) {
-		return;		//只有游戏进行时才可改变方向;不可在短时间内连续改变方向
-	}
-	switch(event.keyCode){
-		case 38: 	//key up
-			var keyDir = 0;
-			event.preventDefault();	
-			break;
-		case 39: 	//key right
-			var keyDir = 1;
-			event.preventDefault();	
-			break;
-		case 40: 	//key down
-			var keyDir = 2;
-			event.preventDefault();	
-			break;
-		case 37: 	//key left
-			var keyDir = 3;
-			event.preventDefault();	
-			break;
-		case 74: 	//key J，测试用
-			message = $("#message").html();
-			$("#message").html(message + "<hr/>" + snake.runDirect + "<br/>" + canvasFrontFace + "<br/>" + canvasFrontFaceDir);
-			return;
-		default:
-			return;
-	}
-	var headFaceLoc = face[canvasFrontFace].faceLoc(snake.bodyLoc[0].face, canvasFrontFaceDir);
-	var realDir = (keyDir + 4 - face[canvasFrontFace].faceDir(headFaceLoc, canvasFrontFaceDir)) % 4;	//实际的运动方向相对当前面的方向逆时针旋转
-	if (Math.abs(realDir - snake.runDirect) == 2) {
-		return;		//不允许向后运动
-	} else{
-		snake.runDirect = realDir;
-		ableChangeDirect = false;
-	}
-});*/

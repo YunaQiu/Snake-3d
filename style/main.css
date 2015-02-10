@@ -1,7 +1,7 @@
 .cube-container{
 	position: relative;
-	margin-top: 120px;
-	margin-bottom: 120px;
+	padding-top: 120px;
+	padding-bottom: 120px;
 	width: 600px;
 	-webkit-transform-style: preserve-3d;
 	-moz-transform-style: preserve-3d;
