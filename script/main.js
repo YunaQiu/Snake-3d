@@ -311,6 +311,8 @@ function printCanvas(){
 	/*绘制青蛙*/
 	var faceLoc = face[canvasFrontFace].faceLoc(frogLoc.face, canvasFrontFaceDir);	//判断目标点所在面
 	var faceDir = face[canvasFrontFace].faceDir(faceLoc, canvasFrontFaceDir);		//判断目标点所在面方向
+	// var faceLoc = frogLoc.face
+	// var faceDir = face[canvasFrontFace].faceDir(faceLoc, canvasFrontFaceDir);		//判断目标点所在面方向
 	canvasContext[faceLoc].fillStyle = "#00FF00";
 	canvasContext[faceLoc].fillRect(frogLoc.rotateX(faceDir), frogLoc.rotateY(faceDir), gridSize, gridSize);		//点坐标根据面方向旋转相应角度
 	if (snake.bodyLoc[snake.bodyLength-2].equal(snake.bodyLoc[snake.bodyLength-3])) {	//如果蛇倒数二三节重合，说明产生了新青蛙
@@ -318,6 +320,8 @@ function printCanvas(){
 	};
 	/*绘制蛇身*/
 	for (var i = 0; i < snake.bodyLength; i++) {
+		// faceLoc = snake.bodyLoc[i].face;
+		// faceDir = face[canvasFrontFace].faceDir(faceLoc, canvasFrontFaceDir);
 		faceLoc = face[canvasFrontFace].faceLoc(snake.bodyLoc[i].face, canvasFrontFaceDir);
 		faceDir = face[canvasFrontFace].faceDir(faceLoc, canvasFrontFaceDir);
 		canvasContext[faceLoc].fillStyle = "red";

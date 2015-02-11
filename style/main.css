@@ -3,11 +3,11 @@
 	padding-top: 120px;
 	padding-bottom: 120px;
 	width: 600px;
-	-webkit-transform-style: preserve-3d;
+/*	-webkit-transform-style: preserve-3d;
 	-moz-transform-style: preserve-3d;
 	-ms-transform-style: preserve-3d;
 	transform-style: preserve-3d;
-	-webkit-transform-origin: 50% 50%;
+*/	-webkit-transform-origin: 50% 50%;
 	-moz-transform-origin: 50% 50%;
 	-ms-transform-origin: 50% 50%;
 	-o-transform-origin: 50% 50%;
