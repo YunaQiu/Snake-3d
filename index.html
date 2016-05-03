@@ -12,6 +12,28 @@
 	<script src="script/animate.js"></script>
 	<script src="script/main.js"></script>
 	<script src="script/input-manage.js"></script>
+	<script src="script/stats.min.js"></script>
+	<script type="text/javascript">
+		var stats = new Stats();
+		stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+		console.log(stats.dom);
+
+		function animate() {
+
+		    stats.begin();
+
+		    // monitored code goes here
+
+		    stats.end();
+
+		    requestAnimationFrame( animate );
+
+		}
+		requestAnimationFrame( animate );
+		$(function(){
+			$('body').append(stats.dom);		
+		})		
+	</script>
 </head>
 <body>
 	<div id="container">
